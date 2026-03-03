@@ -1,0 +1,603 @@
+{
+  "models": {
+    "Random Forest": {
+      "mae": 3.978,
+      "rmse": 5.19,
+      "r2": 0.9142,
+      "cv_r2_mean": 0.912,
+      "cv_r2_std": 0.0107,
+      "feature_importance": {
+        "weeks_in_program": 0.0083,
+        "task_completion_rate": 0.6985,
+        "avg_feedback_rating": 0.1967,
+        "attendance_rate": 0.0155,
+        "tasks_completed": 0.0156,
+        "avg_completion_time_hours": 0.0383,
+        "mentor_sessions_attended": 0.0271
+      }
+    },
+    "XGBoost": {
+      "mae": 3.826,
+      "rmse": 5.146,
+      "r2": 0.9156,
+      "cv_r2_mean": 0.9206,
+      "cv_r2_std": 0.0142,
+      "feature_importance": {
+        "weeks_in_program": 0.0112,
+        "task_completion_rate": 0.3964,
+        "avg_feedback_rating": 0.3088,
+        "attendance_rate": 0.0375,
+        "tasks_completed": 0.0472,
+        "avg_completion_time_hours": 0.0813,
+        "mentor_sessions_attended": 0.1176
+      }
+    }
+  },
+  "features": [
+    "weeks_in_program",
+    "task_completion_rate",
+    "avg_feedback_rating",
+    "attendance_rate",
+    "tasks_completed",
+    "avg_completion_time_hours",
+    "mentor_sessions_attended"
+  ],
+  "interns": [
+    {
+      "id": "INT-1001",
+      "name": "Jesse Nelson",
+      "department": "Data Science",
+      "task_completion_rate": 63.8,
+      "avg_feedback_rating": 3.65,
+      "attendance_rate": 68.8,
+      "actual_score": 64.8,
+      "predicted_score": 63.400001525878906,
+      "category": "Good"
+    },
+    {
+      "id": "INT-1002",
+      "name": "Jesse Johnson",
+      "department": "Data Science",
+      "task_completion_rate": 62.2,
+      "avg_feedback_rating": 3.18,
+      "attendance_rate": 71.8,
+      "actual_score": 48.1,
+      "predicted_score": 48.400001525878906,
+      "category": "Needs Support"
+    },
+    {
+      "id": "INT-1003",
+      "name": "Terry Hill",
+      "department": "Design",
+      "task_completion_rate": 64.7,
+      "avg_feedback_rating": 3.77,
+      "attendance_rate": 81.1,
+      "actual_score": 55.0,
+      "predicted_score": 66.69999694824219,
+      "category": "Good"
+    },
+    {
+      "id": "INT-1004",
+      "name": "Reese Garcia",
+      "department": "Operations",
+      "task_completion_rate": 68.9,
+      "avg_feedback_rating": 3.11,
+      "attendance_rate": 85.5,
+      "actual_score": 58.0,
+      "predicted_score": 58.0,
+      "category": "Needs Support"
+    },
+    {
+      "id": "INT-1005",
+      "name": "Quinn Nelson",
+      "department": "Engineering",
+      "task_completion_rate": 69.2,
+      "avg_feedback_rating": 3.19,
+      "attendance_rate": 75.8,
+      "actual_score": 65.0,
+      "predicted_score": 64.5,
+      "category": "Good"
+    },
+    {
+      "id": "INT-1006",
+      "name": "Blake Clark",
+      "department": "HR",
+      "task_completion_rate": 73.9,
+      "avg_feedback_rating": 3.72,
+      "attendance_rate": 78.2,
+      "actual_score": 86.0,
+      "predicted_score": 85.9000015258789,
+      "category": "Excellent"
+    },
+    {
+      "id": "INT-1007",
+      "name": "Mia Brown",
+      "department": "Marketing",
+      "task_completion_rate": 51.2,
+      "avg_feedback_rating": 3.77,
+      "attendance_rate": 86.3,
+      "actual_score": 66.0,
+      "predicted_score": 66.0,
+      "category": "Good"
+    },
+    {
+      "id": "INT-1008",
+      "name": "Jamie Adams",
+      "department": "HR",
+      "task_completion_rate": 45.1,
+      "avg_feedback_rating": 2.73,
+      "attendance_rate": 71.5,
+      "actual_score": 52.1,
+      "predicted_score": 52.0,
+      "category": "Needs Support"
+    },
+    {
+      "id": "INT-1009",
+      "name": "Kerry Johnson",
+      "department": "Marketing",
+      "task_completion_rate": 69.4,
+      "avg_feedback_rating": 2.54,
+      "attendance_rate": 59.8,
+      "actual_score": 58.2,
+      "predicted_score": 58.20000076293945,
+      "category": "Needs Support"
+    },
+    {
+      "id": "INT-1010",
+      "name": "Val Miller",
+      "department": "Data Science",
+      "task_completion_rate": 79.2,
+      "avg_feedback_rating": 3.79,
+      "attendance_rate": 74.8,
+      "actual_score": 83.8,
+      "predicted_score": 83.4000015258789,
+      "category": "Excellent"
+    },
+    {
+      "id": "INT-1011",
+      "name": "Priya Flores",
+      "department": "Engineering",
+      "task_completion_rate": 37.6,
+      "avg_feedback_rating": 3.48,
+      "attendance_rate": 84.5,
+      "actual_score": 44.0,
+      "predicted_score": 44.20000076293945,
+      "category": "Needs Support"
+    },
+    {
+      "id": "INT-1012",
+      "name": "Liam White",
+      "department": "Finance",
+      "task_completion_rate": 58.3,
+      "avg_feedback_rating": 2.98,
+      "attendance_rate": 80.1,
+      "actual_score": 55.3,
+      "predicted_score": 64.30000305175781,
+      "category": "Good"
+    },
+    {
+      "id": "INT-1013",
+      "name": "Harper Hall",
+      "department": "Finance",
+      "task_completion_rate": 78.5,
+      "avg_feedback_rating": 3.0,
+      "attendance_rate": 79.4,
+      "actual_score": 65.3,
+      "predicted_score": 65.30000305175781,
+      "category": "Good"
+    },
+    {
+      "id": "INT-1014",
+      "name": "Kerry Young",
+      "department": "Legal",
+      "task_completion_rate": 41.4,
+      "avg_feedback_rating": 3.84,
+      "attendance_rate": 71.8,
+      "actual_score": 56.5,
+      "predicted_score": 56.599998474121094,
+      "category": "Needs Support"
+    },
+    {
+      "id": "INT-1015",
+      "name": "Avery Young",
+      "department": "Legal",
+      "task_completion_rate": 58.2,
+      "avg_feedback_rating": 3.9,
+      "attendance_rate": 82.6,
+      "actual_score": 75.5,
+      "predicted_score": 75.5,
+      "category": "Good"
+    },
+    {
+      "id": "INT-1016",
+      "name": "Micah Anderson",
+      "department": "Data Science",
+      "task_completion_rate": 52.8,
+      "avg_feedback_rating": 2.71,
+      "attendance_rate": 79.0,
+      "actual_score": 49.1,
+      "predicted_score": 44.5,
+      "category": "Needs Support"
+    },
+    {
+      "id": "INT-1017",
+      "name": "Ravi Miller",
+      "department": "Design",
+      "task_completion_rate": 19.3,
+      "avg_feedback_rating": 2.26,
+      "attendance_rate": 54.0,
+      "actual_score": 25.0,
+      "predicted_score": 24.899999618530273,
+      "category": "At Risk"
+    },
+    {
+      "id": "INT-1018",
+      "name": "Val Carter",
+      "department": "Product",
+      "task_completion_rate": 50.3,
+      "avg_feedback_rating": 3.3,
+      "attendance_rate": 63.4,
+      "actual_score": 49.3,
+      "predicted_score": 49.20000076293945,
+      "category": "Needs Support"
+    },
+    {
+      "id": "INT-1019",
+      "name": "Lane Garcia",
+      "department": "Data Science",
+      "task_completion_rate": 59.1,
+      "avg_feedback_rating": 3.03,
+      "attendance_rate": 81.7,
+      "actual_score": 51.8,
+      "predicted_score": 55.400001525878906,
+      "category": "Needs Support"
+    },
+    {
+      "id": "INT-1020",
+      "name": "Kerry Clark",
+      "department": "Engineering",
+      "task_completion_rate": 67.5,
+      "avg_feedback_rating": 3.65,
+      "attendance_rate": 75.0,
+      "actual_score": 57.8,
+      "predicted_score": 58.20000076293945,
+      "category": "Needs Support"
+    },
+    {
+      "id": "INT-1021",
+      "name": "Kerry Wilson",
+      "department": "Engineering",
+      "task_completion_rate": 64.3,
+      "avg_feedback_rating": 3.77,
+      "attendance_rate": 87.4,
+      "actual_score": 69.0,
+      "predicted_score": 69.0999984741211,
+      "category": "Good"
+    },
+    {
+      "id": "INT-1022",
+      "name": "Pat Wilson",
+      "department": "Finance",
+      "task_completion_rate": 47.8,
+      "avg_feedback_rating": 2.65,
+      "attendance_rate": 56.5,
+      "actual_score": 37.8,
+      "predicted_score": 37.79999923706055,
+      "category": "At Risk"
+    },
+    {
+      "id": "INT-1023",
+      "name": "Kerry Robinson",
+      "department": "Data Science",
+      "task_completion_rate": 65.7,
+      "avg_feedback_rating": 3.59,
+      "attendance_rate": 85.5,
+      "actual_score": 67.0,
+      "predicted_score": 70.69999694824219,
+      "category": "Good"
+    },
+    {
+      "id": "INT-1024",
+      "name": "Robin Flores",
+      "department": "Data Science",
+      "task_completion_rate": 48.5,
+      "avg_feedback_rating": 2.63,
+      "attendance_rate": 82.2,
+      "actual_score": 57.8,
+      "predicted_score": 57.5,
+      "category": "Needs Support"
+    },
+    {
+      "id": "INT-1025",
+      "name": "Olivia Hill",
+      "department": "Data Science",
+      "task_completion_rate": 71.2,
+      "avg_feedback_rating": 3.91,
+      "attendance_rate": 85.0,
+      "actual_score": 65.3,
+      "predicted_score": 65.4000015258789,
+      "category": "Good"
+    },
+    {
+      "id": "INT-1026",
+      "name": "Priya Baker",
+      "department": "HR",
+      "task_completion_rate": 60.3,
+      "avg_feedback_rating": 2.91,
+      "attendance_rate": 80.9,
+      "actual_score": 63.0,
+      "predicted_score": 63.0,
+      "category": "Good"
+    },
+    {
+      "id": "INT-1027",
+      "name": "Drew Anderson",
+      "department": "Operations",
+      "task_completion_rate": 40.8,
+      "avg_feedback_rating": 1.36,
+      "attendance_rate": 63.0,
+      "actual_score": 20.6,
+      "predicted_score": 20.600000381469727,
+      "category": "At Risk"
+    },
+    {
+      "id": "INT-1028",
+      "name": "Jesse White",
+      "department": "Sales",
+      "task_completion_rate": 60.8,
+      "avg_feedback_rating": 3.82,
+      "attendance_rate": 73.5,
+      "actual_score": 69.1,
+      "predicted_score": 68.9000015258789,
+      "category": "Good"
+    },
+    {
+      "id": "INT-1029",
+      "name": "Val Smith",
+      "department": "Data Science",
+      "task_completion_rate": 55.2,
+      "avg_feedback_rating": 3.24,
+      "attendance_rate": 73.2,
+      "actual_score": 57.0,
+      "predicted_score": 56.599998474121094,
+      "category": "Needs Support"
+    },
+    {
+      "id": "INT-1030",
+      "name": "Avery Nguyen",
+      "department": "Product",
+      "task_completion_rate": 90.2,
+      "avg_feedback_rating": 4.28,
+      "attendance_rate": 100.0,
+      "actual_score": 78.5,
+      "predicted_score": 78.5,
+      "category": "Good"
+    },
+    {
+      "id": "INT-1031",
+      "name": "Liam Thomas",
+      "department": "Marketing",
+      "task_completion_rate": 52.9,
+      "avg_feedback_rating": 2.93,
+      "attendance_rate": 70.1,
+      "actual_score": 45.7,
+      "predicted_score": 48.79999923706055,
+      "category": "Needs Support"
+    },
+    {
+      "id": "INT-1032",
+      "name": "Sage Lewis",
+      "department": "Operations",
+      "task_completion_rate": 93.6,
+      "avg_feedback_rating": 3.71,
+      "attendance_rate": 77.7,
+      "actual_score": 74.6,
+      "predicted_score": 74.69999694824219,
+      "category": "Good"
+    },
+    {
+      "id": "INT-1033",
+      "name": "Charlie Rodriguez",
+      "department": "Data Science",
+      "task_completion_rate": 35.8,
+      "avg_feedback_rating": 2.9,
+      "attendance_rate": 63.5,
+      "actual_score": 50.2,
+      "predicted_score": 50.20000076293945,
+      "category": "Needs Support"
+    },
+    {
+      "id": "INT-1034",
+      "name": "Frankie Green",
+      "department": "Product",
+      "task_completion_rate": 19.5,
+      "avg_feedback_rating": 2.06,
+      "attendance_rate": 64.8,
+      "actual_score": 32.8,
+      "predicted_score": 26.299999237060547,
+      "category": "At Risk"
+    },
+    {
+      "id": "INT-1035",
+      "name": "Wren Green",
+      "department": "Marketing",
+      "task_completion_rate": 63.1,
+      "avg_feedback_rating": 3.36,
+      "attendance_rate": 79.3,
+      "actual_score": 62.9,
+      "predicted_score": 62.70000076293945,
+      "category": "Good"
+    },
+    {
+      "id": "INT-1036",
+      "name": "Robin Baker",
+      "department": "Engineering",
+      "task_completion_rate": 36.5,
+      "avg_feedback_rating": 1.95,
+      "attendance_rate": 68.0,
+      "actual_score": 31.6,
+      "predicted_score": 31.700000762939453,
+      "category": "At Risk"
+    },
+    {
+      "id": "INT-1037",
+      "name": "Drew Williams",
+      "department": "Design",
+      "task_completion_rate": 39.0,
+      "avg_feedback_rating": 3.26,
+      "attendance_rate": 70.2,
+      "actual_score": 48.7,
+      "predicted_score": 48.70000076293945,
+      "category": "Needs Support"
+    },
+    {
+      "id": "INT-1038",
+      "name": "Riley Roberts",
+      "department": "HR",
+      "task_completion_rate": 79.0,
+      "avg_feedback_rating": 3.0,
+      "attendance_rate": 95.5,
+      "actual_score": 77.7,
+      "predicted_score": 77.4000015258789,
+      "category": "Good"
+    },
+    {
+      "id": "INT-1039",
+      "name": "Robin Gonzalez",
+      "department": "Finance",
+      "task_completion_rate": 43.5,
+      "avg_feedback_rating": 3.16,
+      "attendance_rate": 88.0,
+      "actual_score": 54.7,
+      "predicted_score": 54.79999923706055,
+      "category": "Needs Support"
+    },
+    {
+      "id": "INT-1040",
+      "name": "Sophia Thomas",
+      "department": "Marketing",
+      "task_completion_rate": 68.6,
+      "avg_feedback_rating": 2.44,
+      "attendance_rate": 88.7,
+      "actual_score": 61.7,
+      "predicted_score": 56.900001525878906,
+      "category": "Needs Support"
+    },
+    {
+      "id": "INT-1041",
+      "name": "Micah Gonzalez",
+      "department": "Marketing",
+      "task_completion_rate": 57.9,
+      "avg_feedback_rating": 3.42,
+      "attendance_rate": 72.0,
+      "actual_score": 54.5,
+      "predicted_score": 54.5,
+      "category": "Needs Support"
+    },
+    {
+      "id": "INT-1042",
+      "name": "Casey Wilson",
+      "department": "Sales",
+      "task_completion_rate": 77.4,
+      "avg_feedback_rating": 3.28,
+      "attendance_rate": 72.5,
+      "actual_score": 71.7,
+      "predicted_score": 71.69999694824219,
+      "category": "Good"
+    },
+    {
+      "id": "INT-1043",
+      "name": "Skyler Ramirez",
+      "department": "Finance",
+      "task_completion_rate": 74.8,
+      "avg_feedback_rating": 1.84,
+      "attendance_rate": 72.7,
+      "actual_score": 53.2,
+      "predicted_score": 53.20000076293945,
+      "category": "Needs Support"
+    },
+    {
+      "id": "INT-1044",
+      "name": "Jordan Lopez",
+      "department": "Finance",
+      "task_completion_rate": 28.0,
+      "avg_feedback_rating": 2.07,
+      "attendance_rate": 55.5,
+      "actual_score": 29.1,
+      "predicted_score": 28.899999618530273,
+      "category": "At Risk"
+    },
+    {
+      "id": "INT-1045",
+      "name": "Lane Martin",
+      "department": "Sales",
+      "task_completion_rate": 43.5,
+      "avg_feedback_rating": 2.2,
+      "attendance_rate": 55.5,
+      "actual_score": 35.2,
+      "predicted_score": 35.400001525878906,
+      "category": "At Risk"
+    },
+    {
+      "id": "INT-1046",
+      "name": "Pat Allen",
+      "department": "Data Science",
+      "task_completion_rate": 39.9,
+      "avg_feedback_rating": 1.53,
+      "attendance_rate": 65.0,
+      "actual_score": 28.9,
+      "predicted_score": 28.899999618530273,
+      "category": "At Risk"
+    },
+    {
+      "id": "INT-1047",
+      "name": "Mia Adams",
+      "department": "Engineering",
+      "task_completion_rate": 62.5,
+      "avg_feedback_rating": 4.24,
+      "attendance_rate": 81.2,
+      "actual_score": 79.0,
+      "predicted_score": 79.0999984741211,
+      "category": "Good"
+    },
+    {
+      "id": "INT-1048",
+      "name": "Skyler Wright",
+      "department": "Marketing",
+      "task_completion_rate": 72.5,
+      "avg_feedback_rating": 4.56,
+      "attendance_rate": 79.4,
+      "actual_score": 86.5,
+      "predicted_score": 86.4000015258789,
+      "category": "Excellent"
+    },
+    {
+      "id": "INT-1049",
+      "name": "Pat Robinson",
+      "department": "Design",
+      "task_completion_rate": 23.7,
+      "avg_feedback_rating": 2.9,
+      "attendance_rate": 60.6,
+      "actual_score": 40.6,
+      "predicted_score": 40.400001525878906,
+      "category": "Needs Support"
+    },
+    {
+      "id": "INT-1050",
+      "name": "Priya Davis",
+      "department": "Product",
+      "task_completion_rate": 39.0,
+      "avg_feedback_rating": 3.01,
+      "attendance_rate": 84.5,
+      "actual_score": 49.9,
+      "predicted_score": 49.599998474121094,
+      "category": "Needs Support"
+    }
+  ],
+  "category_distribution": {
+    "Needs Support": 187,
+    "Good": 157,
+    "At Risk": 111,
+    "Excellent": 45
+  }
+}

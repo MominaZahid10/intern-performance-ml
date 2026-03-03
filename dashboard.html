@@ -1,0 +1,976 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Intern Performance Prediction Dashboard</title>
+    <meta name="description"
+        content="ML-powered dashboard for predicting and analyzing intern performance using Random Forest and XGBoost models.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <style>
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            --bg-primary: #0a0e1a;
+            --bg-secondary: #111827;
+            --bg-card: #1a2236;
+            --bg-card-hover: #1f2942;
+            --border: #2a3654;
+            --border-glow: rgba(99, 102, 241, 0.3);
+            --text-primary: #f1f5f9;
+            --text-secondary: #94a3b8;
+            --text-muted: #64748b;
+            --accent-blue: #38bdf8;
+            --accent-purple: #a78bfa;
+            --accent-green: #34d399;
+            --accent-amber: #fbbf24;
+            --accent-red: #f87171;
+            --accent-pink: #f472b6;
+            --gradient-1: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --gradient-2: linear-gradient(135deg, #38bdf8 0%, #818cf8 100%);
+            --gradient-3: linear-gradient(135deg, #34d399 0%, #38bdf8 100%);
+            --shadow-card: 0 4px 24px rgba(0, 0, 0, 0.3);
+            --shadow-glow: 0 0 30px rgba(99, 102, 241, 0.15);
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+
+        /* ── Animated Background ────────────────────────────── */
+        .bg-grid {
+            position: fixed;
+            inset: 0;
+            background-image:
+                radial-gradient(circle at 20% 50%, rgba(99, 102, 241, 0.08) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(56, 189, 248, 0.06) 0%, transparent 50%),
+                radial-gradient(circle at 50% 80%, rgba(167, 139, 250, 0.06) 0%, transparent 50%);
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .container {
+            position: relative;
+            z-index: 1;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 24px;
+        }
+
+        /* ── Header ─────────────────────────────────────────── */
+        .header {
+            text-align: center;
+            padding: 48px 0 32px;
+        }
+
+        .header__badge {
+            display: inline-block;
+            padding: 6px 16px;
+            background: rgba(99, 102, 241, 0.15);
+            border: 1px solid rgba(99, 102, 241, 0.3);
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--accent-blue);
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            margin-bottom: 16px;
+        }
+
+        .header h1 {
+            font-size: 2.6rem;
+            font-weight: 800;
+            background: var(--gradient-2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 8px;
+            letter-spacing: -0.5px;
+        }
+
+        .header p {
+            color: var(--text-secondary);
+            font-size: 1.05rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* ── Cards ──────────────────────────────────────────── */
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 28px;
+            box-shadow: var(--shadow-card);
+            transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-glow);
+            border-color: var(--border-glow);
+        }
+
+        .card__title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .card__title .icon {
+            font-size: 1.3rem;
+        }
+
+        /* ── Metrics Grid ───────────────────────────────────── */
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 16px;
+            margin-bottom: 32px;
+        }
+
+        .metric-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 22px;
+            text-align: center;
+            transition: all 0.25s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .metric-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            border-radius: 14px 14px 0 0;
+        }
+
+        .metric-card:nth-child(1)::before {
+            background: var(--gradient-2);
+        }
+
+        .metric-card:nth-child(2)::before {
+            background: linear-gradient(135deg, var(--accent-purple), var(--accent-pink));
+        }
+
+        .metric-card:nth-child(3)::before {
+            background: var(--gradient-3);
+        }
+
+        .metric-card:nth-child(4)::before {
+            background: linear-gradient(135deg, var(--accent-amber), var(--accent-red));
+        }
+
+        .metric-card:nth-child(5)::before {
+            background: var(--gradient-1);
+        }
+
+        .metric-card:nth-child(6)::before {
+            background: linear-gradient(135deg, var(--accent-green), var(--accent-amber));
+        }
+
+        .metric-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-glow);
+        }
+
+        .metric-card__label {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .metric-card__value {
+            font-size: 2rem;
+            font-weight: 800;
+            letter-spacing: -1px;
+        }
+
+        .metric-card__sub {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            margin-top: 4px;
+        }
+
+        .val-blue {
+            color: var(--accent-blue);
+        }
+
+        .val-purple {
+            color: var(--accent-purple);
+        }
+
+        .val-green {
+            color: var(--accent-green);
+        }
+
+        .val-amber {
+            color: var(--accent-amber);
+        }
+
+        .val-red {
+            color: var(--accent-red);
+        }
+
+        .val-pink {
+            color: var(--accent-pink);
+        }
+
+        /* ── Section Layout ─────────────────────────────────── */
+        .section {
+            margin-bottom: 32px;
+        }
+
+        .section__title {
+            font-size: 1.4rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 24px;
+        }
+
+        /* ── Charts ─────────────────────────────────────────── */
+        .chart-container {
+            position: relative;
+            height: 320px;
+        }
+
+        /* ── Table ──────────────────────────────────────────── */
+        .table-wrapper {
+            overflow-x: auto;
+            border-radius: 12px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.88rem;
+        }
+
+        thead th {
+            background: rgba(99, 102, 241, 0.1);
+            padding: 14px 16px;
+            text-align: left;
+            font-weight: 600;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            font-size: 0.72rem;
+            letter-spacing: 0.8px;
+            border-bottom: 1px solid var(--border);
+            position: sticky;
+            top: 0;
+            white-space: nowrap;
+        }
+
+        tbody tr {
+            border-bottom: 1px solid rgba(42, 54, 84, 0.5);
+            transition: background 0.15s ease;
+        }
+
+        tbody tr:hover {
+            background: rgba(99, 102, 241, 0.06);
+        }
+
+        tbody td {
+            padding: 12px 16px;
+            white-space: nowrap;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 8px;
+            font-size: 0.78rem;
+            font-weight: 600;
+        }
+
+        .badge--excellent {
+            background: rgba(52, 211, 153, 0.15);
+            color: var(--accent-green);
+        }
+
+        .badge--good {
+            background: rgba(56, 189, 248, 0.15);
+            color: var(--accent-blue);
+        }
+
+        .badge--support {
+            background: rgba(251, 191, 36, 0.15);
+            color: var(--accent-amber);
+        }
+
+        .badge--risk {
+            background: rgba(248, 113, 113, 0.15);
+            color: var(--accent-red);
+        }
+
+        /* ── Prediction Form ────────────────────────────────── */
+        .predict-form {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.78rem;
+            color: var(--text-secondary);
+            margin-bottom: 6px;
+            font-weight: 500;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px 16px;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            color: var(--text-primary);
+            font-family: inherit;
+            font-size: 0.95rem;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: rgba(99, 102, 241, 0.6);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
+        }
+
+        .btn-predict {
+            grid-column: 1 / -1;
+            padding: 14px 28px;
+            background: var(--gradient-1);
+            border: none;
+            border-radius: 12px;
+            color: white;
+            font-family: inherit;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: transform 0.15s, box-shadow 0.15s;
+            letter-spacing: 0.5px;
+        }
+
+        .btn-predict:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(99, 102, 241, 0.3);
+        }
+
+        .btn-predict:active {
+            transform: translateY(0);
+        }
+
+        .prediction-result {
+            grid-column: 1 / -1;
+            padding: 24px;
+            background: rgba(99, 102, 241, 0.08);
+            border: 1px solid rgba(99, 102, 241, 0.25);
+            border-radius: 14px;
+            text-align: center;
+            display: none;
+        }
+
+        .prediction-result.show {
+            display: block;
+            animation: fadeIn 0.4s ease;
+        }
+
+        .prediction-result__score {
+            font-size: 3rem;
+            font-weight: 800;
+            letter-spacing: -2px;
+            margin: 8px 0;
+        }
+
+        .prediction-result__category {
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        /* ── Category Distribution ──────────────────────────── */
+        .dist-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 12px;
+            margin-top: 16px;
+        }
+
+        .dist-card {
+            text-align: center;
+            padding: 18px 12px;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+        }
+
+        .dist-card__count {
+            font-size: 2rem;
+            font-weight: 800;
+        }
+
+        .dist-card__label {
+            font-size: 0.78rem;
+            color: var(--text-secondary);
+            margin-top: 4px;
+        }
+
+        /* ── Footer ─────────────────────────────────────────── */
+        .footer {
+            text-align: center;
+            padding: 40px 0 24px;
+            color: var(--text-muted);
+            font-size: 0.82rem;
+        }
+
+        /* ── Data load prompt ───────────────────────────────── */
+        .data-prompt {
+            text-align: center;
+            padding: 60px 24px;
+        }
+
+        .data-prompt h2 {
+            color: var(--accent-blue);
+            margin-bottom: 12px;
+        }
+
+        .data-prompt p {
+            color: var(--text-secondary);
+            max-width: 500px;
+            margin: 0 auto 20px;
+        }
+
+        .data-prompt code {
+            background: var(--bg-secondary);
+            padding: 3px 8px;
+            border-radius: 6px;
+            font-size: 0.9rem;
+        }
+
+        .file-input-label {
+            display: inline-block;
+            padding: 14px 32px;
+            background: var(--gradient-1);
+            border-radius: 12px;
+            color: white;
+            font-weight: 700;
+            cursor: pointer;
+            transition: transform 0.15s;
+        }
+
+        .file-input-label:hover {
+            transform: translateY(-2px);
+        }
+
+        #fileInput {
+            display: none;
+        }
+
+        /* ── Animations ─────────────────────────────────────── */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(8px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .animate-in {
+            animation: fadeIn 0.5s ease forwards;
+            opacity: 0;
+        }
+
+        /* ── Responsive ─────────────────────────────────────── */
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 1.8rem;
+            }
+
+            .grid-2 {
+                grid-template-columns: 1fr;
+            }
+
+            .container {
+                padding: 16px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="bg-grid"></div>
+    <div class="container">
+        <!-- Header -->
+        <header class="header animate-in">
+            <div class="header__badge">ML-Powered Analytics</div>
+            <h1>Intern Performance Predictor</h1>
+            <p>Predict which interns will excel or need support using Random Forest &amp; XGBoost regression models</p>
+        </header>
+
+        <!-- Data Load Prompt -->
+        <div id="dataPrompt" class="card data-prompt animate-in" style="animation-delay:0.1s">
+            <h2>📊 Load Model Results</h2>
+            <p>Run the pipeline first, then load the generated results file to populate the dashboard.</p>
+            <p style="margin-bottom:20px"><code>python run_pipeline.py</code></p>
+            <label class="file-input-label" for="fileInput">Load dashboard_data.json</label>
+            <input type="file" id="fileInput" accept=".json">
+        </div>
+
+        <!-- Dashboard Content (hidden until data is loaded) -->
+        <div id="dashboardContent" style="display:none">
+
+            <!-- Metrics Summary -->
+            <div class="metrics-grid" id="metricsGrid"></div>
+
+            <!-- Charts Row -->
+            <div class="section">
+                <h2 class="section__title"><span>📈</span> Model Analysis</h2>
+                <div class="grid-2">
+                    <div class="card">
+                        <div class="card__title"><span class="icon">🎯</span> Feature Importance — Random Forest</div>
+                        <div class="chart-container"><canvas id="chartFeatureRF"></canvas></div>
+                    </div>
+                    <div class="card">
+                        <div class="card__title"><span class="icon">🎯</span> Feature Importance — XGBoost</div>
+                        <div class="chart-container"><canvas id="chartFeatureXGB"></canvas></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <div class="grid-2">
+                    <div class="card">
+                        <div class="card__title"><span class="icon">⚖️</span> Model Metrics Comparison</div>
+                        <div class="chart-container"><canvas id="chartMetrics"></canvas></div>
+                    </div>
+                    <div class="card">
+                        <div class="card__title"><span class="icon">📊</span> Intern Risk Distribution</div>
+                        <div class="chart-container"><canvas id="chartDist"></canvas></div>
+                        <div class="dist-cards" id="distCards"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Prediction Form -->
+            <div class="section">
+                <h2 class="section__title"><span>🔮</span> Predict Performance</h2>
+                <div class="card">
+                    <div class="card__title"><span class="icon">🧪</span> Enter Intern Metrics</div>
+                    <form id="predictForm" class="predict-form">
+                        <div class="form-group">
+                            <label for="inp_weeks">Weeks in Program</label>
+                            <input type="number" id="inp_weeks" value="12" min="1" max="52" step="1">
+                        </div>
+                        <div class="form-group">
+                            <label for="inp_completion">Task Completion Rate (%)</label>
+                            <input type="number" id="inp_completion" value="75" min="0" max="100" step="0.1">
+                        </div>
+                        <div class="form-group">
+                            <label for="inp_feedback">Avg Feedback Rating (1-5)</label>
+                            <input type="number" id="inp_feedback" value="3.5" min="1" max="5" step="0.01">
+                        </div>
+                        <div class="form-group">
+                            <label for="inp_attendance">Attendance Rate (%)</label>
+                            <input type="number" id="inp_attendance" value="85" min="0" max="100" step="0.1">
+                        </div>
+                        <div class="form-group">
+                            <label for="inp_tasks">Tasks Completed</label>
+                            <input type="number" id="inp_tasks" value="20" min="0" step="1">
+                        </div>
+                        <div class="form-group">
+                            <label for="inp_time">Avg Completion Time (hrs)</label>
+                            <input type="number" id="inp_time" value="10" min="0.5" max="40" step="0.5">
+                        </div>
+                        <div class="form-group">
+                            <label for="inp_mentor">Mentor Sessions Attended</label>
+                            <input type="number" id="inp_mentor" value="5" min="0" max="20" step="1">
+                        </div>
+                        <button type="submit" class="btn-predict">⚡ Predict Performance Score</button>
+                        <div class="prediction-result" id="predResult">
+                            <div style="font-size:0.85rem;color:var(--text-secondary)">Predicted Performance Score</div>
+                            <div class="prediction-result__score" id="predScore">—</div>
+                            <div class="prediction-result__category" id="predCategory">—</div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Intern Table -->
+            <div class="section">
+                <h2 class="section__title"><span>👥</span> Intern Performance Overview</h2>
+                <div class="card" style="padding:0;overflow:hidden">
+                    <div class="table-wrapper" style="max-height:500px;overflow-y:auto">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Name</th>
+                                    <th>Department</th>
+                                    <th>Task Completion</th>
+                                    <th>Feedback</th>
+                                    <th>Attendance</th>
+                                    <th>Actual Score</th>
+                                    <th>Predicted</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="internTableBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <footer class="footer">
+            Intern Performance Prediction Model &bull; Random Forest &amp; XGBoost Regression &bull; Built with
+            scikit-learn
+        </footer>
+    </div>
+
+    <script>
+        // ── State ──────────────────────────────────────────────────────────
+        let dashData = null;
+
+        // ── File Loading ───────────────────────────────────────────────────
+        document.getElementById('fileInput').addEventListener('change', function (e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function (ev) {
+                try {
+                    dashData = JSON.parse(ev.target.result);
+                    document.getElementById('dataPrompt').style.display = 'none';
+                    document.getElementById('dashboardContent').style.display = 'block';
+                    renderDashboard();
+                } catch (err) {
+                    alert('Error parsing JSON: ' + err.message);
+                }
+            };
+            reader.readAsText(file);
+        });
+
+        // Also try loading from relative path automatically
+        fetch('outputs/dashboard_data.json')
+            .then(r => r.json())
+            .then(data => {
+                dashData = data;
+                document.getElementById('dataPrompt').style.display = 'none';
+                document.getElementById('dashboardContent').style.display = 'block';
+                renderDashboard();
+            })
+            .catch(() => { /* file not available yet, user will load manually */ });
+
+        // ── Render Dashboard ───────────────────────────────────────────────
+        function renderDashboard() {
+            renderMetrics();
+            renderFeatureCharts();
+            renderMetricsChart();
+            renderDistribution();
+            renderTable();
+        }
+
+        // ── Metrics Cards ──────────────────────────────────────────────────
+        function renderMetrics() {
+            const grid = document.getElementById('metricsGrid');
+            const models = dashData.models;
+            const rf = models['Random Forest'];
+            const xgb = models['XGBoost'];
+            const best = rf.r2 >= xgb.r2 ? 'Random Forest' : 'XGBoost';
+            const bestR2 = Math.max(rf.r2, xgb.r2);
+
+            const cards = [
+                { label: 'Best Model', value: best.split(' ')[0], sub: best === 'Random Forest' ? 'Forest' : '', cls: 'val-blue' },
+                { label: 'Best R² Score', value: bestR2.toFixed(4), sub: 'coefficient of determination', cls: 'val-purple' },
+                { label: 'RF MAE', value: rf.mae.toFixed(2), sub: 'mean absolute error', cls: 'val-green' },
+                { label: 'XGB MAE', value: xgb.mae.toFixed(2), sub: 'mean absolute error', cls: 'val-amber' },
+                { label: 'RF RMSE', value: rf.rmse.toFixed(2), sub: 'root mean squared error', cls: 'val-pink' },
+                { label: 'XGB RMSE', value: xgb.rmse.toFixed(2), sub: 'root mean squared error', cls: 'val-red' },
+            ];
+
+            grid.innerHTML = cards.map((c, i) => `
+                <div class="metric-card animate-in" style="animation-delay:${i * 0.08}s">
+                    <div class="metric-card__label">${c.label}</div>
+                    <div class="metric-card__value ${c.cls}">${c.value}${c.sub && c.label === 'Best Model' ? '<span style="font-size:1rem"> ' + c.sub + '</span>' : ''}</div>
+                    ${c.sub && c.label !== 'Best Model' ? `<div class="metric-card__sub">${c.sub}</div>` : ''}
+                </div>
+            `).join('');
+        }
+
+        // ── Feature Importance Charts ──────────────────────────────────────
+        function renderFeatureCharts() {
+            const features = dashData.features;
+            const prettyNames = features.map(f => f.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase()));
+
+            // Random Forest
+            const rfImp = features.map(f => dashData.models['Random Forest'].feature_importance[f]);
+            createHorizontalBar('chartFeatureRF', prettyNames, rfImp, '#38bdf8');
+
+            // XGBoost
+            const xgbImp = features.map(f => dashData.models['XGBoost'].feature_importance[f]);
+            createHorizontalBar('chartFeatureXGB', prettyNames, xgbImp, '#a78bfa');
+        }
+
+        function createHorizontalBar(canvasId, labels, values, color) {
+            // Sort by importance
+            const paired = labels.map((l, i) => ({ label: l, value: values[i] }));
+            paired.sort((a, b) => a.value - b.value);
+
+            new Chart(document.getElementById(canvasId), {
+                type: 'bar',
+                data: {
+                    labels: paired.map(p => p.label),
+                    datasets: [{
+                        data: paired.map(p => p.value),
+                        backgroundColor: color + 'cc',
+                        borderColor: color,
+                        borderWidth: 1,
+                        borderRadius: 4,
+                    }]
+                },
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        x: {
+                            grid: { color: 'rgba(148,163,184,0.1)' },
+                            ticks: { color: '#94a3b8' }
+                        },
+                        y: {
+                            grid: { display: false },
+                            ticks: { color: '#e2e8f0', font: { size: 11 } }
+                        }
+                    },
+                    animation: { duration: 1200, easing: 'easeOutQuart' }
+                }
+            });
+        }
+
+        // ── Metrics Comparison Chart ───────────────────────────────────────
+        function renderMetricsChart() {
+            const rf = dashData.models['Random Forest'];
+            const xgb = dashData.models['XGBoost'];
+
+            new Chart(document.getElementById('chartMetrics'), {
+                type: 'bar',
+                data: {
+                    labels: ['MAE ↓', 'RMSE ↓', 'R² ↑', 'CV R² ↑'],
+                    datasets: [
+                        {
+                            label: 'Random Forest',
+                            data: [rf.mae, rf.rmse, rf.r2, rf.cv_r2_mean],
+                            backgroundColor: '#38bdf8cc',
+                            borderColor: '#38bdf8',
+                            borderWidth: 1,
+                            borderRadius: 6,
+                        },
+                        {
+                            label: 'XGBoost',
+                            data: [xgb.mae, xgb.rmse, xgb.r2, xgb.cv_r2_mean],
+                            backgroundColor: '#a78bfacc',
+                            borderColor: '#a78bfa',
+                            borderWidth: 1,
+                            borderRadius: 6,
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            labels: { color: '#e2e8f0', usePointStyle: true, padding: 20 }
+                        }
+                    },
+                    scales: {
+                        x: { grid: { display: false }, ticks: { color: '#94a3b8' } },
+                        y: { grid: { color: 'rgba(148,163,184,0.1)' }, ticks: { color: '#94a3b8' } }
+                    },
+                    animation: { duration: 1000, easing: 'easeOutQuart' }
+                }
+            });
+        }
+
+        // ── Distribution Chart ─────────────────────────────────────────────
+        function renderDistribution() {
+            const dist = dashData.category_distribution;
+            const catConfig = {
+                'Excellent': { color: '#34d399', bg: 'rgba(52,211,153,0.1)' },
+                'Good': { color: '#38bdf8', bg: 'rgba(56,189,248,0.1)' },
+                'Needs Support': { color: '#fbbf24', bg: 'rgba(251,191,36,0.1)' },
+                'At Risk': { color: '#f87171', bg: 'rgba(248,113,113,0.1)' },
+            };
+
+            const labels = Object.keys(dist);
+            const values = Object.values(dist);
+            const colors = labels.map(l => (catConfig[l] || { color: '#64748b' }).color);
+
+            new Chart(document.getElementById('chartDist'), {
+                type: 'doughnut',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        data: values,
+                        backgroundColor: colors.map(c => c + '99'),
+                        borderColor: colors,
+                        borderWidth: 2,
+                        hoverOffset: 8,
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    cutout: '60%',
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: { color: '#e2e8f0', padding: 12, usePointStyle: true, font: { size: 11 } }
+                        }
+                    },
+                    animation: { animateRotate: true, duration: 1200 }
+                }
+            });
+
+            // Distribution cards
+            const cardsDiv = document.getElementById('distCards');
+            cardsDiv.innerHTML = labels.map(l => {
+                const cfg = catConfig[l] || { color: '#64748b', bg: 'rgba(100,116,139,0.1)' };
+                return `
+                    <div class="dist-card" style="background:${cfg.bg};border-color:${cfg.color}30">
+                        <div class="dist-card__count" style="color:${cfg.color}">${dist[l]}</div>
+                        <div class="dist-card__label">${l}</div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // ── Intern Table ───────────────────────────────────────────────────
+        function renderTable() {
+            const tbody = document.getElementById('internTableBody');
+            tbody.innerHTML = dashData.interns.map(intern => {
+                let badgeClass = 'badge--good';
+                if (intern.category.includes('Excellent')) badgeClass = 'badge--excellent';
+                else if (intern.category.includes('Support')) badgeClass = 'badge--support';
+                else if (intern.category.includes('Risk')) badgeClass = 'badge--risk';
+
+                return `
+                    <tr>
+                        <td style="color:var(--text-muted)">${intern.id}</td>
+                        <td style="font-weight:500">${intern.name}</td>
+                        <td>${intern.department}</td>
+                        <td>${intern.task_completion_rate}%</td>
+                        <td>⭐ ${intern.avg_feedback_rating.toFixed(1)}</td>
+                        <td>${intern.attendance_rate}%</td>
+                        <td style="font-weight:600">${intern.actual_score.toFixed(1)}</td>
+                        <td style="font-weight:600">${intern.predicted_score.toFixed(1)}</td>
+                        <td><span class="badge ${badgeClass}">${intern.category}</span></td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        // ── Prediction Form ────────────────────────────────────────────────
+        document.getElementById('predictForm').addEventListener('submit', async function (e) {
+            e.preventDefault();
+
+            const vals = {
+                weeks_in_program: +document.getElementById('inp_weeks').value,
+                task_completion_rate: +document.getElementById('inp_completion').value,
+                avg_feedback_rating: +document.getElementById('inp_feedback').value,
+                attendance_rate: +document.getElementById('inp_attendance').value,
+                tasks_completed: +document.getElementById('inp_tasks').value,
+                avg_completion_time_hours: +document.getElementById('inp_time').value,
+                mentor_sessions_attended: +document.getElementById('inp_mentor').value,
+            };
+
+            const catColors = {
+                'Excellent': 'var(--accent-green)',
+                'Good': 'var(--accent-blue)',
+                'Needs Support': 'var(--accent-amber)',
+                'At Risk': 'var(--accent-red)',
+            };
+
+            try {
+                const resp = await fetch('/api/predict', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(vals),
+                });
+                const result = await resp.json();
+                if (result.error) throw new Error(result.error);
+
+                const score = result.score;
+                const category = result.category;
+                const catColor = catColors[category] || 'var(--accent-blue)';
+
+                const resultDiv = document.getElementById('predResult');
+                document.getElementById('predScore').textContent = score.toFixed(1);
+                document.getElementById('predScore').style.color = catColor;
+                document.getElementById('predCategory').textContent = category;
+                document.getElementById('predCategory').style.color = catColor;
+                resultDiv.classList.add('show');
+            } catch (err) {
+                // Fallback to client-side formula if API is unavailable
+                const score = Math.min(100, Math.max(0,
+                    0.30 * vals.task_completion_rate
+                    + 8.0 * vals.avg_feedback_rating
+                    + 0.15 * vals.attendance_rate
+                    + 0.4 * vals.tasks_completed
+                    - 0.5 * vals.avg_completion_time_hours
+                    + 1.0 * vals.mentor_sessions_attended
+                ));
+
+                let category, catColor;
+                if (score >= 80) { category = 'Excellent'; catColor = 'var(--accent-green)'; }
+                else if (score >= 60) { category = 'Good'; catColor = 'var(--accent-blue)'; }
+                else if (score >= 40) { category = 'Needs Support'; catColor = 'var(--accent-amber)'; }
+                else { category = 'At Risk'; catColor = 'var(--accent-red)'; }
+
+                const resultDiv = document.getElementById('predResult');
+                document.getElementById('predScore').textContent = score.toFixed(1);
+                document.getElementById('predScore').style.color = catColor;
+                document.getElementById('predCategory').textContent = category;
+                document.getElementById('predCategory').style.color = catColor;
+                resultDiv.classList.add('show');
+            }
+        });
+    </script>
+</body>
+
+</html>
