@@ -5,6 +5,11 @@ An ML-powered system that predicts intern performance using **Random Forest** an
 ![Python](https://img.shields.io/badge/Python-3.11-blue?logo=python)
 ![scikit-learn](https://img.shields.io/badge/scikit--learn-1.3+-orange?logo=scikit-learn)
 ![Flask](https://img.shields.io/badge/Flask-3.0-lightgrey?logo=flask)
+![Railway](https://img.shields.io/badge/Deployed_on-Railway-blueviolet?logo=railway)
+
+## 🌐 Live Demo
+
+**[intern-performance-model.up.railway.app](https://intern-performance-model.up.railway.app/)**
 
 ## ✨ Features
 
@@ -38,7 +43,7 @@ Then open **http://localhost:5000** in your browser.
 ├── run_pipeline.py         # Full pipeline runner
 ├── dashboard.html          # Interactive web dashboard
 ├── requirements.txt        # Python dependencies
-├── render.yaml             # Render deployment config
+├── Procfile                # Railway deployment config
 ├── data/                   # Generated intern dataset
 ├── models/                 # Trained model files (.pkl)
 └── outputs/                # Plots & dashboard data JSON
@@ -69,10 +74,19 @@ Then open **http://localhost:5000** in your browser.
 }
 ```
 
+## 🚀 Deployment
+
+Deployed on **Railway** with always-on hosting.
+
+To deploy your own:
+1. Fork this repo
+2. Create a new project on [railway.app](https://railway.app)
+3. Connect your GitHub repo — Railway auto-detects the `Procfile`
+4. Generate a domain under **Settings → Networking**
+
 ## 🛠 Tech Stack
 
 - **ML**: scikit-learn, XGBoost, pandas, NumPy
 - **Viz**: matplotlib, seaborn, Chart.js
 - **Web**: Flask, Gunicorn
-- **Deploy**: Render
-# intern-performance-ml
+- **Deploy**: Railway
