@@ -554,34 +554,27 @@
         <!-- Dashboard Content (hidden until data is loaded) -->
         <div id="dashboardContent" style="display:none">
 
-            <!-- Metrics Summary -->
-            <div class="metrics-grid" id="metricsGrid"></div>
-
-            <!-- Charts Row -->
+            <!-- Intern Performance Overview (Core Section) -->
             <div class="section">
-                <h2 class="section__title"><span>📈</span> Model Analysis</h2>
-                <div class="grid-2">
-                    <div class="card">
-                        <div class="card__title"><span class="icon">🎯</span> Feature Importance — Random Forest</div>
-                        <div class="chart-container"><canvas id="chartFeatureRF"></canvas></div>
-                    </div>
-                    <div class="card">
-                        <div class="card__title"><span class="icon">🎯</span> Feature Importance — XGBoost</div>
-                        <div class="chart-container"><canvas id="chartFeatureXGB"></canvas></div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="section">
-                <div class="grid-2">
-                    <div class="card">
-                        <div class="card__title"><span class="icon">⚖️</span> Model Metrics Comparison</div>
-                        <div class="chart-container"><canvas id="chartMetrics"></canvas></div>
-                    </div>
-                    <div class="card">
-                        <div class="card__title"><span class="icon">📊</span> Intern Risk Distribution</div>
-                        <div class="chart-container"><canvas id="chartDist"></canvas></div>
-                        <div class="dist-cards" id="distCards"></div>
+                <h2 class="section__title"><span>👥</span> Intern Performance Overview</h2>
+                <div class="card" style="padding:0;overflow:hidden">
+                    <div class="table-wrapper" style="max-height:500px;overflow-y:auto">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Name</th>
+                                    <th>Department</th>
+                                    <th>Task Completion</th>
+                                    <th>Feedback</th>
+                                    <th>Attendance</th>
+                                    <th>Actual Score</th>
+                                    <th>Predicted</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="internTableBody"></tbody>
+                        </table>
                     </div>
                 </div>
             </div>
@@ -630,27 +623,34 @@
                 </div>
             </div>
 
-            <!-- Intern Table -->
+            <!-- Metrics Summary -->
+            <div class="metrics-grid" id="metricsGrid"></div>
+
+            <!-- Model Analysis Charts -->
             <div class="section">
-                <h2 class="section__title"><span>👥</span> Intern Performance Overview</h2>
-                <div class="card" style="padding:0;overflow:hidden">
-                    <div class="table-wrapper" style="max-height:500px;overflow-y:auto">
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>ID</th>
-                                    <th>Name</th>
-                                    <th>Department</th>
-                                    <th>Task Completion</th>
-                                    <th>Feedback</th>
-                                    <th>Attendance</th>
-                                    <th>Actual Score</th>
-                                    <th>Predicted</th>
-                                    <th>Status</th>
-                                </tr>
-                            </thead>
-                            <tbody id="internTableBody"></tbody>
-                        </table>
+                <h2 class="section__title"><span>📈</span> Model Analysis</h2>
+                <div class="grid-2">
+                    <div class="card">
+                        <div class="card__title"><span class="icon">🎯</span> Feature Importance — Random Forest</div>
+                        <div class="chart-container"><canvas id="chartFeatureRF"></canvas></div>
+                    </div>
+                    <div class="card">
+                        <div class="card__title"><span class="icon">🎯</span> Feature Importance — XGBoost</div>
+                        <div class="chart-container"><canvas id="chartFeatureXGB"></canvas></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <div class="grid-2">
+                    <div class="card">
+                        <div class="card__title"><span class="icon">⚖️</span> Model Metrics Comparison</div>
+                        <div class="chart-container"><canvas id="chartMetrics"></canvas></div>
+                    </div>
+                    <div class="card">
+                        <div class="card__title"><span class="icon">📊</span> Intern Risk Distribution</div>
+                        <div class="chart-container"><canvas id="chartDist"></canvas></div>
+                        <div class="dist-cards" id="distCards"></div>
                     </div>
                 </div>
             </div>
